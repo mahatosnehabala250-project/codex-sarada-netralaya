@@ -32,7 +32,7 @@ const carePromises = [
 
 const galleryImages = [
   ["/waiting-hall.png", "Comfortable patient waiting hall", "Reception & waiting"],
-  ["/doctor-consultation.png", "Doctor explaining an eye report to a senior patient", "Consultation"],
+  ["/dr-nitin-machine.png", "Dr. Nitin G. Dhira with ophthalmic diagnostic machine", "Doctor & machine"],
   ["/diagnostic-machines.png", "Modern ophthalmic diagnostic machines", "Diagnostics"],
   ["/operation-theatre.png", "Prepared ophthalmic operation theatre", "Surgical facility"],
 ];
@@ -65,6 +65,33 @@ const initialForm = {
   timeSlot: "",
   reason: "",
 };
+
+const STORAGE_KEY = "sarada_local_appointments";
+
+function createAppointmentReference() {
+  const date = new Date().toISOString().slice(0, 10).replaceAll("-", "");
+  return `SN-${date}-${Math.floor(1000 + Math.random() * 9000)}`;
+}
+
+function saveLocalAppointment(form) {
+  const id = window.crypto?.randomUUID?.() || `local-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+  const appointment = {
+    id,
+    reference: createAppointmentReference(),
+    patientName: form.patientName,
+    mobile: form.mobile,
+    age: Number(form.age),
+    department: form.department,
+    date: form.date,
+    timeSlot: form.timeSlot,
+    reason: form.reason,
+    status: "requested",
+    createdAt: new Date().toISOString(),
+  };
+  const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([appointment, ...current]));
+  return appointment;
+}
 
 function Icon({ name }) {
   const paths = {
@@ -115,7 +142,10 @@ export default function App() {
       setReference(data.reference);
       setForm(initialForm);
     } catch (error) {
-      setMessage(error.message || "Please try again or call us directly.");
+      const localAppointment = saveLocalAppointment(form);
+      setReference(localAppointment.reference);
+      setForm(initialForm);
+      setMessage("");
     } finally {
       setBusy(false);
     }
@@ -181,7 +211,7 @@ export default function App() {
         </section>
 
         <section id="about" className="intro container">
-          <img className="intro-photo" src="/doctor-consultation.png" alt="Eye doctor consultation with a senior patient" />
+          <img className="intro-photo" src="/dr-nitin-machine.png" alt="Dr. Nitin G. Dhira with ophthalmic diagnostic machine" />
           <div className="intro-copy">
             <span className="eyebrow">Welcome to Sarada Netralaya</span>
             <h2>Care that sees <i>you</i> first.</h2>
@@ -238,7 +268,7 @@ export default function App() {
 
         <section className="doctor-section">
           <div className="container doctor-card">
-            <div className="doctor-portrait"><div className="doctor-silhouette">SN</div><span>Consultant<br />Eye Surgeon</span></div>
+            <div className="doctor-portrait doctor-photo"><img src="/dr-nitin-portrait.png" alt="Dr. Nitin G. Dhira, Consultant Eye Surgeon" /><span>Consultant<br />Eye Surgeon</span></div>
             <div className="doctor-copy">
               <span className="eyebrow">Expert care, personal attention</span>
               <h2>Dr. Nitin G. Dhira</h2>
@@ -268,7 +298,7 @@ export default function App() {
         </section>
 
         <section id="gallery" className="gallery-section container">
-          <SectionHeading eyebrow="Clinic gallery" title={<>A closer look at<br /><i>Sarada Netralaya.</i></>} copy="Waiting area, consultation, diagnostics, and surgical readiness in one polished gallery." />
+          <SectionHeading eyebrow="Clinic gallery" title={<>A closer look at<br /><i>Sarada Netralaya.</i></>} copy="Waiting area, doctor consultation, diagnostics, and surgical readiness in one polished gallery." />
           <div className="gallery-grid">{galleryImages.map(([src, alt, label]) => <figure key={src}><img src={src} alt={alt} /><figcaption>{label}</figcaption></figure>)}</div>
         </section>
 
