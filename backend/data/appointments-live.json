@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "id": "55aa2360-4f05-4f50-9a1f-cfad8f1a242e",
+    "reference": "SN-20260712-7230",
+    "patientName": "Production Demo Patient",
+    "mobile": "9999900000",
+    "age": 45,
+    "department": "Eye Care",
+    "date": "2026-07-14",
+    "timeSlot": "10:00 AM - 12:00 PM",
+    "reason": "Owner dashboard production verification",
+    "status": "requested",
+    "createdAt": "2026-07-12T19:47:43.959Z"
+  }
+]
