@@ -5,6 +5,10 @@ const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "owner";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "sarada@2026";
 const ADMIN_DISPLAY_NAME = process.env.ADMIN_DISPLAY_NAME || "Owner";
 const TOKEN_EXPIRY_MS = 1000 * 60 * 60 * 12;
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || "";
+const GITHUB_REPO = process.env.GITHUB_REPO || "";
+const GITHUB_BRANCH = process.env.GITHUB_BRANCH || "main";
+const GITHUB_APPOINTMENTS_PATH = process.env.GITHUB_APPOINTMENTS_PATH || "backend/data/appointments-live.json";
 
 if (!globalThis.__saradaAppointments) {
   globalThis.__saradaAppointments = [];
@@ -78,6 +82,56 @@ export function validateOwner(username, password) {
 
 export function appointments() {
   return globalThis.__saradaAppointments;
+}
+
+async function githubRequest(pathname, options = {}) {
+  const response = await fetch(`https://api.github.com${pathname}`, {
+    ...options,
+    headers: {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28",
+      ...(options.headers || {}),
+    },
+  });
+  const data = await response.json().catch(() => ({}));
+  return { response, data };
+}
+
+async function readGitHubAppointmentsFile() {
+  const encodedPath = GITHUB_APPOINTMENTS_PATH.split("/").map(encodeURIComponent).join("/");
+  const { response, data } = await githubRequest(`/repos/${GITHUB_REPO}/contents/${encodedPath}?ref=${encodeURIComponent(GITHUB_BRANCH)}`);
+  if (response.status === 404) return { rows: [], sha: "" };
+  if (!response.ok) throw new Error(data.message || "Could not read appointment store.");
+  const json = Buffer.from(data.content || "", "base64").toString("utf8");
+  return { rows: JSON.parse(json || "[]"), sha: data.sha || "" };
+}
+
+export async function readAppointments() {
+  if (!GITHUB_TOKEN || !GITHUB_REPO) return appointments();
+  const { rows } = await readGitHubAppointmentsFile();
+  return Array.isArray(rows) ? rows : [];
+}
+
+export async function writeAppointments(rows) {
+  if (!GITHUB_TOKEN || !GITHUB_REPO) {
+    globalThis.__saradaAppointments = rows;
+    return;
+  }
+  const { sha } = await readGitHubAppointmentsFile();
+  const encodedPath = GITHUB_APPOINTMENTS_PATH.split("/").map(encodeURIComponent).join("/");
+  const body = {
+    message: "Update Sarada appointment store",
+    content: Buffer.from(JSON.stringify(rows, null, 2)).toString("base64"),
+    branch: GITHUB_BRANCH,
+    ...(sha ? { sha } : {}),
+  };
+  const { response, data } = await githubRequest(`/repos/${GITHUB_REPO}/contents/${encodedPath}`, {
+    method: "PUT",
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) throw new Error(data.message || "Could not write appointment store.");
 }
 
 export function buildStats(rows) {

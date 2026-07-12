@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
-import { appointments, json, normalizeText } from "./_store.js";
+import { json, normalizeText, readAppointments, writeAppointments } from "./_store.js";
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== "POST") return json(res, 405, { error: "Method not allowed" });
   const patientName = normalizeText(req.body?.patientName);
   const mobile = normalizeText(req.body?.mobile);
@@ -31,6 +31,8 @@ export default function handler(req, res) {
     status: "requested",
     createdAt: new Date().toISOString(),
   };
-  appointments().unshift(appointment);
+  const rows = await readAppointments();
+  rows.unshift(appointment);
+  await writeAppointments(rows);
   return json(res, 201, { ok: true, reference: appointment.reference, appointment, notification: { skipped: true } });
 }
