@@ -102,6 +102,7 @@ function Icon({ name }) {
     pin: <><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></>,
     menu: <><path d="M4 7h16M4 12h16M4 17h16" /></>,
     close: <><path d="m6 6 12 12M18 6 6 18" /></>,
+    back: <><path d="M19 12H5" /><path d="m11 18-6-6 6-6" /></>,
   };
   return <svg viewBox="0 0 24 24" aria-hidden="true">{paths[name]}</svg>;
 }
@@ -116,10 +117,57 @@ function SectionHeading({ eyebrow, title, copy }) {
   );
 }
 
-export default function App() {
-  if (window.location.pathname === "/owner") return <OwnerPortal />;
+function Brand({ footer }) {
+  return (
+    <a className={`brand${footer ? " footer-brand" : ""}`} href="/" aria-label="Sarada Netralaya home">
+      <span className="brand-mark"><img src="/logo-emblem.png" alt="" /></span>
+      <span><strong>Sarada</strong><em>NETRALAYA</em></span>
+    </a>
+  );
+}
 
-  const [menuOpen, setMenuOpen] = useState(false);
+function Header({ menuOpen, setMenuOpen, bookingHref = "/booking" }) {
+  return (
+    <>
+      <header className="topbar">
+        <div className="container utility">
+          <span>Jamshedpur's trusted eye care centre</span>
+          <a href="tel:+917091090014"><Icon name="phone" /> +91 70910 90014</a>
+        </div>
+      </header>
+
+      <nav className="nav container" aria-label="Main navigation">
+        <Brand />
+        <div className={`nav-links ${menuOpen ? "open" : ""}`}>
+          <a onClick={() => setMenuOpen(false)} href="/#about">About</a>
+          <a onClick={() => setMenuOpen(false)} href="/#services">Services</a>
+          <a onClick={() => setMenuOpen(false)} href="/#facilities">Technology</a>
+          <a onClick={() => setMenuOpen(false)} href="/#gallery">Gallery</a>
+          <a onClick={() => setMenuOpen(false)} href="/#reviews">Reviews</a>
+          <a onClick={() => setMenuOpen(false)} href="/#contact">Contact</a>
+          <a onClick={() => setMenuOpen(false)} className="nav-cta" href={bookingHref}>Book appointment <Icon name="arrow" /></a>
+        </div>
+        <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation">
+          <Icon name={menuOpen ? "close" : "menu"} />
+        </button>
+      </nav>
+    </>
+  );
+}
+
+function Footer() {
+  return (
+    <footer>
+      <div className="container footer-content">
+        <Brand footer />
+        <p>Passion for Excellence <b>|</b> Committed to Care</p>
+        <small><a href="/owner">Owner login</a> | &copy; {new Date().getFullYear()} Sarada Netralaya. All rights reserved.</small>
+      </div>
+    </footer>
+  );
+}
+
+function useBookingForm() {
   const [form, setForm] = useState(initialForm);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -151,33 +199,85 @@ export default function App() {
     }
   }
 
+  return { form, update, busy, message, reference, setReference, submitAppointment };
+}
+
+function BookingFormFields({ form, update, busy, onSubmit, heading = "Book an appointment" }) {
+  return (
+    <form className="booking-form" onSubmit={onSubmit}>
+      <h3>{heading}</h3>
+      <div className="form-grid">
+        <label>Patient name<input required value={form.patientName} onChange={(event) => update("patientName", event.target.value)} placeholder="Your full name" /></label>
+        <label>Mobile number<input required type="tel" pattern="[0-9+ ]{10,15}" value={form.mobile} onChange={(event) => update("mobile", event.target.value)} placeholder="+91" /></label>
+        <label>Age<input required min="0" max="120" type="number" value={form.age} onChange={(event) => update("age", event.target.value)} placeholder="Age" /></label>
+        <label>Department<select value={form.department} onChange={(event) => update("department", event.target.value)}><option>Eye Care</option><option>Optical</option></select></label>
+        <label>Preferred date<input required type="date" min={new Date().toISOString().slice(0, 10)} value={form.date} onChange={(event) => update("date", event.target.value)} /></label>
+        <label>Preferred time<select required value={form.timeSlot} onChange={(event) => update("timeSlot", event.target.value)}><option value="">Select a time</option><option>10:00 AM - 12:00 PM</option><option>12:00 PM - 2:00 PM</option><option>2:00 PM - 4:00 PM</option><option>4:00 PM - 6:00 PM</option><option>6:00 PM - 7:30 PM</option></select></label>
+      </div>
+      <label>Reason for visit <small>(optional)</small><textarea rows="2" value={form.reason} onChange={(event) => update("reason", event.target.value)} placeholder="Tell us how we can help" /></label>
+      <button className="button primary form-submit" disabled={busy}>{busy ? "Booking your visit..." : "Confirm appointment"}<Icon name="arrow" /></button>
+    </form>
+  );
+}
+
+function ConfirmationModal({ reference, onClose }) {
+  if (!reference) return null;
+  return (
+    <div className="confirmation" role="dialog" aria-modal="true">
+      <div>
+        <button aria-label="Close confirmation" onClick={onClose}><Icon name="close" /></button>
+        <span className="confirmation-mark"><Icon name="check" /></span>
+        <h2>Your appointment is requested.</h2>
+        <p>Thank you. Our team will contact you shortly to confirm your preferred time.</p>
+        <strong>Reference: {reference}</strong>
+        <a className="button primary" href="tel:+917091090014">Call us for assistance <Icon name="phone" /></a>
+      </div>
+    </div>
+  );
+}
+
+function BookingPage() {
+  const { form, update, busy, reference, setReference, submitAppointment } = useBookingForm();
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="site-shell">
-      <header className="topbar">
-        <div className="container utility">
-          <span>Jamshedpur's trusted eye care centre</span>
-          <a href="tel:+917091090014"><Icon name="phone" /> +91 70910 90014</a>
-        </div>
-      </header>
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} bookingHref="/booking" />
+      <main>
+        <section className="booking-page-hero">
+          <div className="container">
+            <a className="owner-back booking-page-back" href="/"><Icon name="back" /> Back to website</a>
+            <span className="eyebrow">Appointments</span>
+            <h1>Your clearer tomorrow starts <i>today.</i></h1>
+            <p>Book your visit in a few simple steps. No scrolling required &mdash; our team will be ready to welcome you.</p>
+            <div className="booking-contact">
+              <span><Icon name="phone" /> Prefer to call? <a href="tel:+917091090014">+91 70910 90014</a></span>
+              <span><Icon name="calendar" /> Monday-Saturday, 10:00 AM-7:30 PM</span>
+            </div>
+          </div>
+        </section>
+        <section className="booking-page-form-section">
+          <div className="container booking-page-form-wrap">
+            <BookingFormFields form={form} update={update} busy={busy} onSubmit={submitAppointment} heading="Appointment details" />
+          </div>
+        </section>
+      </main>
+      <Footer />
+      <ConfirmationModal reference={reference} onClose={() => setReference("")} />
+    </div>
+  );
+}
 
-      <nav className="nav container" aria-label="Main navigation">
-        <a className="brand" href="#home" aria-label="Sarada Netralaya home">
-          <span className="brand-mark">S</span>
-          <span><strong>Sarada</strong><em>NETRALAYA</em></span>
-        </a>
-        <div className={`nav-links ${menuOpen ? "open" : ""}`}>
-          <a onClick={() => setMenuOpen(false)} href="#about">About</a>
-          <a onClick={() => setMenuOpen(false)} href="#services">Services</a>
-          <a onClick={() => setMenuOpen(false)} href="#facilities">Technology</a>
-          <a onClick={() => setMenuOpen(false)} href="#gallery">Gallery</a>
-          <a onClick={() => setMenuOpen(false)} href="#reviews">Reviews</a>
-          <a onClick={() => setMenuOpen(false)} href="#contact">Contact</a>
-          <a onClick={() => setMenuOpen(false)} className="nav-cta" href="#appointment">Book appointment <Icon name="arrow" /></a>
-        </div>
-        <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation">
-          <Icon name={menuOpen ? "close" : "menu"} />
-        </button>
-      </nav>
+export default function App() {
+  if (window.location.pathname === "/owner") return <OwnerPortal />;
+  if (window.location.pathname === "/booking") return <BookingPage />;
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { form, update, busy, message, reference, setReference, submitAppointment } = useBookingForm();
+
+  return (
+    <div className="site-shell">
+      <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} bookingHref="/booking" />
 
       <main>
         <section id="home" className="hero">
@@ -189,7 +289,7 @@ export default function App() {
             <h1>See life <i>clearly.</i></h1>
             <p className="hero-copy">Exceptional eye care shaped around you. For more than 30 years, Sarada Netralaya has paired advanced technology with genuine compassion.</p>
             <div className="hero-actions">
-              <a className="button primary" href="#appointment">Book an appointment <Icon name="arrow" /></a>
+              <a className="button primary" href="/booking">Book an appointment <Icon name="arrow" /></a>
               <a className="text-link" href="#gallery">See clinic gallery <Icon name="arrow" /></a>
             </div>
           </div>
@@ -318,21 +418,9 @@ export default function App() {
                 <span><Icon name="calendar" /> Monday-Saturday, 10:00 AM-7:30 PM</span>
               </div>
             </div>
-            <form className="booking-form" onSubmit={submitAppointment}>
-              <h3>Book an appointment</h3>
-              <div className="form-grid">
-                <label>Patient name<input required value={form.patientName} onChange={(event) => update("patientName", event.target.value)} placeholder="Your full name" /></label>
-                <label>Mobile number<input required type="tel" pattern="[0-9+ ]{10,15}" value={form.mobile} onChange={(event) => update("mobile", event.target.value)} placeholder="+91" /></label>
-                <label>Age<input required min="0" max="120" type="number" value={form.age} onChange={(event) => update("age", event.target.value)} placeholder="Age" /></label>
-                <label>Department<select value={form.department} onChange={(event) => update("department", event.target.value)}><option>Eye Care</option><option>Optical</option></select></label>
-                <label>Preferred date<input required type="date" min={new Date().toISOString().slice(0, 10)} value={form.date} onChange={(event) => update("date", event.target.value)} /></label>
-                <label>Preferred time<select required value={form.timeSlot} onChange={(event) => update("timeSlot", event.target.value)}><option value="">Select a time</option><option>10:00 AM - 12:00 PM</option><option>12:00 PM - 2:00 PM</option><option>2:00 PM - 4:00 PM</option><option>4:00 PM - 6:00 PM</option><option>6:00 PM - 7:30 PM</option></select></label>
-              </div>
-              <label>Reason for visit <small>(optional)</small><textarea rows="2" value={form.reason} onChange={(event) => update("reason", event.target.value)} placeholder="Tell us how we can help" /></label>
-              <button className="button primary form-submit" disabled={busy}>{busy ? "Booking your visit..." : "Confirm appointment"}<Icon name="arrow" /></button>
-              {message && <p className="form-message">{message}</p>}
-            </form>
+            <BookingFormFields form={form} update={update} busy={busy} onSubmit={submitAppointment} />
           </div>
+          {message && <p className="container form-message">{message}</p>}
         </section>
 
         <section id="faq" className="faq-section container">
@@ -361,32 +449,15 @@ export default function App() {
         </section>
       </main>
 
-      <footer>
-        <div className="container footer-content">
-          <a className="brand footer-brand" href="#home"><span className="brand-mark">S</span><span><strong>Sarada</strong><em>NETRALAYA</em></span></a>
-          <p>Passion for Excellence <b>|</b> Committed to Care</p>
-          <small><a href="/owner">Owner login</a> | &copy; {new Date().getFullYear()} Sarada Netralaya. All rights reserved.</small>
-        </div>
-      </footer>
+      <Footer />
 
       <div className="quick-book" aria-label="Quick contact">
         <a href="tel:+917091090014">Call now</a>
-        <a href="#appointment">Book appointment</a>
+        <a href="/booking">Book appointment</a>
         <a href="https://www.google.com/maps/search/?api=1&query=Swastik+Ambika+Tower+Near+HDFC+Bank+Kashidih+New+Layout+Area+Jamshedpur+831001" target="_blank" rel="noreferrer">Directions</a>
       </div>
 
-      {reference && (
-        <div className="confirmation" role="dialog" aria-modal="true">
-          <div>
-            <button aria-label="Close confirmation" onClick={() => setReference("")}><Icon name="close" /></button>
-            <span className="confirmation-mark"><Icon name="check" /></span>
-            <h2>Your appointment is requested.</h2>
-            <p>Thank you. Our team will contact you shortly to confirm your preferred time.</p>
-            <strong>Reference: {reference}</strong>
-            <a className="button primary" href="tel:+917091090014">Call us for assistance <Icon name="phone" /></a>
-          </div>
-        </div>
-      )}
+      <ConfirmationModal reference={reference} onClose={() => setReference("")} />
     </div>
   );
 }

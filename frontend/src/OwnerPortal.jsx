@@ -251,6 +251,7 @@ export default function OwnerPortal() {
       <main className="owner-login">
         <a className="owner-back" href="/">Back to website</a>
         <section>
+          <span className="brand-mark owner-login-mark"><img src="/logo-emblem.png" alt="" /></span>
           <span className="owner-eyebrow">Sarada Netralaya</span>
           <h1>Owner <i>dashboard</i></h1>
           <p>Review appointments, patient details, daily status, and follow-up work.</p>
@@ -274,7 +275,7 @@ export default function OwnerPortal() {
   return (
     <main className="owner-dashboard">
       <header>
-        <a className="owner-brand" href="/">Sarada <span>NETRALAYA</span></a>
+        <a className="owner-brand" href="/"><span className="brand-mark owner-header-mark"><img src="/logo-emblem.png" alt="" /></span>Sarada <span>NETRALAYA</span></a>
         <div><span>Signed in as {user.displayName}</span><button onClick={logout}>Sign out</button></div>
       </header>
 
