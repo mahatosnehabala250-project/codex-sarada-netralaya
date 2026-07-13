@@ -29,3 +29,119 @@
 @media(max-width:800px){.booking-page-hero{padding:44px 0 40px}.booking-page-form-section{padding:40px 0 110px}}
 @media(max-width:500px){.booking-page-hero h1{font-size:2.5rem}.booking-page-form-wrap .booking-form{padding:26px 20px}}
 .owner-login-mark{width:76px;height:34px;margin-bottom:18px}.owner-brand{display:flex;align-items:center;gap:10px}.owner-header-mark{width:52px;height:26px}
+
+/* ============ ADMIN SHELL (rich multi-module dashboard) ============ */
+.oi{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.admin-shell{display:flex;min-height:100vh;background:var(--cream)}
+.admin-backdrop{display:none}
+.admin-sidebar{width:252px;flex-shrink:0;background:var(--navy);color:#cfe0dc;display:flex;flex-direction:column;padding:22px 16px;position:sticky;top:0;height:100vh}
+.admin-brand{display:flex;align-items:center;gap:11px;padding:2px 6px 20px;border-bottom:1px solid rgba(220,236,232,.14);text-decoration:none}
+.admin-brand .brand-mark{width:52px;height:26px;flex-shrink:0}
+.admin-brand b{display:block;font:600 1.02rem var(--serif);color:#fff;line-height:1.1}
+.admin-brand em{display:block;font-style:normal;font-size:.6rem;font-weight:700;letter-spacing:.2em;color:var(--gold)}
+.admin-nav{display:flex;flex-direction:column;gap:3px;margin-top:16px;flex:1;overflow-y:auto}
+.admin-nav button{display:flex;align-items:center;gap:12px;padding:11px 13px;border:0;background:none;border-radius:11px;color:#a9c2bd;font-family:var(--sans);font-size:.88rem;font-weight:600;text-align:left;cursor:pointer;transition:background .15s,color .15s}
+.admin-nav button:hover{background:rgba(220,236,232,.08);color:#fff}
+.admin-nav button.active{background:var(--teal);color:#fff}
+.admin-badge{margin-left:auto;background:var(--gold);color:var(--navy);font-size:.68rem;font-weight:800;padding:1px 7px;border-radius:999px}
+.admin-external{display:flex;align-items:center;gap:10px;margin-top:10px;padding:11px 13px;color:#a9c2bd;font-size:.84rem;font-weight:600;border-top:1px solid rgba(220,236,232,.14);text-decoration:none}
+.admin-external:hover{color:#fff}
+
+.admin-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.admin-topbar{background:#fff;border-bottom:1px solid var(--line);padding:18px 30px;display:flex;align-items:center;gap:18px;position:sticky;top:0;z-index:20}
+.admin-topbar h1{font-size:1.35rem;margin:0}
+.admin-topbar p{font-size:.84rem;color:var(--muted);margin:2px 0 0;font-family:var(--sans)}
+.admin-menu-toggle{display:none;background:none;border:0;color:var(--ink);padding:6px}
+.admin-user{margin-left:auto;display:flex;align-items:center;gap:10px}
+.au-av{width:38px;height:38px;border-radius:10px;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;font-size:.9rem}
+.au-who{display:flex;flex-direction:column;line-height:1.2}
+.au-who b{font-size:.86rem;color:var(--ink)}
+.au-who small{font-size:.72rem;color:var(--muted)}
+.admin-user button{background:none;border:1.5px solid var(--line);border-radius:9px;color:var(--muted);padding:8px;margin-left:4px}
+.admin-user button:hover{border-color:var(--red);color:var(--red)}
+
+.admin-content{padding:26px 30px 50px;flex:1}
+.admin-grid-2{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;margin-bottom:18px}
+.admin-card{background:#fff;border:1px solid var(--line);border-radius:16px;margin-bottom:18px;box-shadow:0 8px 26px rgba(17,44,54,.05)}
+.admin-grid-2 .admin-card{margin-bottom:0}
+.admin-card-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.admin-card-head h3{font-size:1.05rem;margin:0}
+.admin-card-body{padding:18px 20px}
+.admin-link-btn{background:none;border:0;color:var(--teal);font-family:var(--sans);font-size:.82rem;font-weight:700;cursor:pointer}
+.admin-no-pad .owner-table-wrap,.admin-no-pad .owner-side{margin:0}
+
+/* KPI icon chip on owner-metric (reused card) */
+.om-top{display:flex;justify-content:flex-end;margin-bottom:-6px}
+.om-ic{width:38px;height:38px;border-radius:11px;background:var(--mint);color:var(--teal);display:flex;align-items:center;justify-content:center}
+.om-ic .oi{width:19px;height:19px}
+.om-ic.gold{background:#f8ecd6;color:var(--gold)}
+.om-ic.teal{background:var(--mint);color:var(--teal-dark)}
+
+/* mini bar chart */
+.mini-bars{display:flex;align-items:flex-end;gap:10px;height:170px}
+.mb-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%}
+.mb-track{flex:1;width:100%;max-width:30px;display:flex;align-items:flex-end;background:var(--mint);border-radius:8px;overflow:hidden}
+.mb-fill{width:100%;background:linear-gradient(180deg,var(--teal),var(--teal-dark));border-radius:8px;min-height:4px;transition:height .4s var(--ease)}
+.mb-col span{margin-top:8px;font-size:.68rem;color:var(--muted);font-weight:600}
+
+/* recent list */
+.admin-recent-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.admin-recent-row:last-child{border-bottom:0}
+.ar-av{width:36px;height:36px;border-radius:10px;background:var(--mint);color:var(--teal-dark);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;font-size:.82rem;flex-shrink:0}
+.ar-info{flex:1;min-width:0}
+.ar-info b{display:block;font-size:.88rem;color:var(--ink);font-family:var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ar-info small{font-size:.76rem;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;font-size:.72rem;font-weight:700;white-space:nowrap}
+.pill.status-requested{background:#fff3dc;color:#a3690f}
+.pill.status-confirmed{background:var(--mint);color:var(--teal-dark)}
+.pill.status-completed{background:#e5f3e5;color:#2f7d3a}
+.pill.status-cancelled{background:#fbe6e3;color:#a3392c}
+
+/* patients / generic admin table */
+.admin-table{border-top:1px solid var(--line)}
+.admin-table-row{display:grid;grid-template-columns:1.4fr 1fr .7fr 1fr 1fr;gap:14px;align-items:center;padding:13px 4px;border-bottom:1px solid var(--line-2,var(--line));font-size:.86rem}
+.admin-table-head{color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.admin-cell-name{display:flex;align-items:center;gap:10px;font-weight:600;color:var(--ink)}
+
+/* doctors */
+.admin-doctor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.admin-doctor-card{padding:26px 24px;text-align:center}
+.admin-doctor-av{width:64px;height:64px;border-radius:50%;background:var(--mint);color:var(--teal-dark);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;font-size:1.4rem;margin:0 auto 14px}
+.admin-doctor-card h3{margin-bottom:4px}
+.admin-doctor-role{color:var(--muted);font-size:.84rem;margin-bottom:18px}
+.admin-doctor-stats{display:flex;justify-content:center;gap:22px;border-top:1px solid var(--line);padding-top:16px}
+.admin-doctor-stats strong{display:block;font-family:var(--serif);font-size:1.3rem;color:var(--teal-dark)}
+.admin-doctor-stats span{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+/* reviews */
+.admin-review{padding:16px 0;border-bottom:1px solid var(--line)}
+.admin-review:last-child{border-bottom:0}
+.admin-stars{color:var(--gold);letter-spacing:2px;margin-bottom:6px}
+.admin-review p{font-family:var(--serif);font-style:italic;color:var(--ink);font-size:1rem;margin-bottom:6px}
+.admin-review span{font-size:.78rem;color:var(--muted);font-weight:600}
+
+/* settings / fees */
+.admin-fee-form{display:flex;flex-direction:column;gap:16px;max-width:420px}
+.admin-fee-form label{font-size:.84rem;font-weight:600;color:var(--ink)}
+.admin-fee-form label small{color:var(--muted);font-weight:500}
+.admin-fee-input{display:flex;align-items:center;gap:8px;margin-top:8px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px;background:var(--cream)}
+.admin-fee-input span{color:var(--muted);font-weight:700}
+.admin-fee-input input{border:0;background:none;padding:11px 0;font-size:.95rem;width:100%;color:var(--ink)}
+.admin-fee-input input:focus{outline:none}
+.admin-saved{color:var(--teal-dark);font-weight:700;font-size:.85rem;margin-left:12px}
+
+@media(max-width:900px){
+  .admin-sidebar{position:fixed;left:0;top:0;z-index:210;transform:translateX(-100%);transition:transform .3s var(--ease)}
+  .admin-sidebar.open{transform:none}
+  .admin-backdrop.open{display:block;position:fixed;inset:0;background:rgba(9,30,36,.45);z-index:205}
+  .admin-menu-toggle{display:block}
+  .admin-topbar p{display:none}
+  .admin-grid-2{grid-template-columns:1fr}
+  .admin-table-row{grid-template-columns:1.4fr 1fr 1fr}
+  .admin-table-row>span:nth-child(3),.admin-table-row>span:nth-child(5){display:none}
+}
+@media(max-width:640px){
+  .admin-content{padding:18px 14px 40px}
+  .admin-topbar{padding:14px 16px}
+  .au-who{display:none}
+}
