@@ -103,6 +103,7 @@ function Icon({ name }) {
     menu: <><path d="M4 7h16M4 12h16M4 17h16" /></>,
     close: <><path d="m6 6 12 12M18 6 6 18" /></>,
     back: <><path d="M19 12H5" /><path d="m11 18-6-6 6-6" /></>,
+    lock: <><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></>,
   };
   return <svg viewBox="0 0 24 24" aria-hidden="true">{paths[name]}</svg>;
 }
@@ -145,6 +146,7 @@ function Header({ menuOpen, setMenuOpen, bookingHref = "/booking" }) {
           <a onClick={() => setMenuOpen(false)} href="/#gallery">Gallery</a>
           <a onClick={() => setMenuOpen(false)} href="/#reviews">Reviews</a>
           <a onClick={() => setMenuOpen(false)} href="/#contact">Contact</a>
+          <a onClick={() => setMenuOpen(false)} className="owner-nav-link" href="/owner"><Icon name="lock" /> Owner Login</a>
           <a onClick={() => setMenuOpen(false)} className="nav-cta" href={bookingHref}>Book appointment <Icon name="arrow" /></a>
         </div>
         <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation">
@@ -161,7 +163,7 @@ function Footer() {
       <div className="container footer-content">
         <Brand footer />
         <p>Passion for Excellence <b>|</b> Committed to Care</p>
-        <small><a href="/owner">Owner login</a> | &copy; {new Date().getFullYear()} Sarada Netralaya. All rights reserved.</small>
+        <small>&copy; {new Date().getFullYear()} Sarada Netralaya. All rights reserved.</small>
       </div>
     </footer>
   );
